@@ -15,7 +15,7 @@ public class Server {
     Application app = new Application();
 
     public Server() {
-        this.data = new Database(1001);
+        this.data = new Database();
         try {
             this.serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
@@ -46,19 +46,20 @@ public class Server {
                     DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             ) {
                 while (!socket.isClosed()) {
+                    //get 1 or set 1 helllo
                     String str = inputStream.readUTF();
-                    System.out.println(str);
-                    String s = app.menu(str,data);
-                    System.out.println(s);
-                    if(str.equals("exit  ")) {
-                        outputStream.writeUTF(s);
+                    System.out.println("Received " + str);
+                    String result = app.jsonMenu(str,data);
+                    if(result.equals("exit")) {
+                        result = "{\"response\":\"OK\"}";
+                        outputStream.writeUTF(result);
                         socket.close();
                         serverSocket.close();
                     }else {
-                        System.out.println("kek");
-                        outputStream.writeUTF(s);
+                        outputStream.writeUTF(result);
                         socket.close();
                     }
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();

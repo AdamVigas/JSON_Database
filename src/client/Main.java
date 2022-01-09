@@ -2,10 +2,15 @@ package client;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class Main {
@@ -14,9 +19,9 @@ public class Main {
 
     @Parameter(names = {"--type", "-t"})
     String request;
-    @Parameter(names = {"--index", "-i"})
+    @Parameter(names = {"--index", "-k"})
     String index;
-    @Parameter(names = {"--modify", "-m"})
+    @Parameter(names = {"--modify", "-v"})
     String data;
 
     public static void main(final String[] args) {
@@ -31,26 +36,8 @@ public class Main {
 
     }
 
-    private static void createSocket() {
-        final String address = "127.0.0.1";
-        final int port = 23456;
-        while (true) {
-            try {
-                clientSocket = new Socket(InetAddress.getByName(address), port);
-                return;
-            } catch (Exception e) {
-                System.out.println("\n" + e + "\n[CLIENT] Can't connect to the server");
-            }
 
-        }
-    }
 
-    private static void closeSocket() {
-        try {
-            clientSocket.close();
-        } catch (Exception ignored) {
-        }
-    }
 
     public void run() {
         final String SERVER_ADDRESS = "127.0.0.1";
@@ -61,15 +48,25 @@ public class Main {
                 DataOutputStream output  = new DataOutputStream(socket.getOutputStream())
         ) {
             System.out.println("Client started!");
+            /*
             // Sending a request to the server
             final String message = request + " " + (index!=null ? index : "")
                     + " " + (data!=null ? data : "");
-            output.writeUTF(message);
-            System.out.println("Sent: " + message.trim());
+            */
+
+            //toJson
+            Map<String, String> temp = new LinkedHashMap<>();
+            temp.put("type",request);
+            temp.put("key", index);
+            temp.put("value", data);
+            Gson gson = new Gson();
+            String tmp = gson.toJson(temp);
+            output.writeUTF(tmp);
+            System.out.println("Sent: " + tmp);
 
 
             // Getting answer from server
-            String receivedMessage = input.readUTF().trim();
+            String receivedMessage = input.readUTF();
             System.out.println("Received: " + receivedMessage);
 
         } catch (IOException e) {

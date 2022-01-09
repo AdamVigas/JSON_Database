@@ -1,28 +1,15 @@
 package server;
 
-import java.util.ArrayList;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Database {
 
-    ArrayList<String> data;
-    int size;
+    Map<String, String> jsonData;
 
-    public Database(int n) {
-        this.data  = new ArrayList<String>(n);
-        this.size = n;
-        fillDatabase();
-    }
-
-    public void fillDatabase () {
-        for(int i = 0; i < size; i++) {
-            this.data.add("");
-        }
-    }
-
-    public void printDatabase () {
-        for(int i = 0; i < size; i++) {
-            System.out.println(this.data.get(i));
-        }
+    public Database() {
+        jsonData = new LinkedHashMap<>();
     }
 
 
