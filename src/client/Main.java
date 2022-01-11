@@ -7,10 +7,7 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 
 public class Main {
@@ -23,6 +20,8 @@ public class Main {
     String index;
     @Parameter(names = {"--modify", "-v"})
     String data;
+    @Parameter(names = {"--input", "-in"}, description = "file name")
+    String fileName;
 
     public static void main(final String[] args) {
 
@@ -48,19 +47,28 @@ public class Main {
                 DataOutputStream output  = new DataOutputStream(socket.getOutputStream())
         ) {
             System.out.println("Client started!");
-            /*
-            // Sending a request to the server
-            final String message = request + " " + (index!=null ? index : "")
-                    + " " + (data!=null ? data : "");
-            */
-
-            //toJson
-            Map<String, String> temp = new LinkedHashMap<>();
-            temp.put("type",request);
-            temp.put("key", index);
-            temp.put("value", data);
+            String fileTmp = null;
             Gson gson = new Gson();
-            String tmp = gson.toJson(temp);
+            String tmp = null;
+            if(fileName == null) {
+                //toJson
+                Map<String, String> temp = new LinkedHashMap<>();
+                temp.put("type",request);
+                temp.put("key", index);
+                temp.put("value", data);
+                tmp = gson.toJson(temp);
+            }else {
+                try {
+                    File file = new File("C:\\Users\\Adam\\IdeaProjects\\JSON Database\\JSON Database\\task\\src\\client\\data\\" + fileName);
+                    Scanner scanner = new Scanner(file);
+                    tmp = scanner.nextLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+
             output.writeUTF(tmp);
             System.out.println("Sent: " + tmp);
 

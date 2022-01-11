@@ -46,10 +46,12 @@ public class Server {
                     DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             ) {
                 while (!socket.isClosed()) {
-                    //get 1 or set 1 helllo
+
+                    //JSON FORMAT GET
                     String str = inputStream.readUTF();
-                    System.out.println("Received " + str);
-                    String result = app.jsonMenu(str,data);
+                    //System.out.println("Received " + str);
+                    //RESULT GET OK,ERROR in JSON or exit
+                    String result = app.fileMenu(str);
                     if(result.equals("exit")) {
                         result = "{\"response\":\"OK\"}";
                         outputStream.writeUTF(result);
